@@ -2,13 +2,15 @@
 
 namespace ClassGeneric
 {
-    public sealed class OneDimensionalArray<T> : HeirArray, IPrinter
+    public sealed class OneDimensionalArray<T> : HeirArray<T>, IPrinter
     {
         private T[] arr; //массив
-
-        public OneDimensionalArray(bool input_mode = false) : base(input_mode)
+        Access<T> access;
+                
+        public OneDimensionalArray(Access<T> item, bool input_mode = false) : base(item, input_mode)
         {
         }
+       
 
         private int VerifiedInput() //ввод размера массива
         {
@@ -22,28 +24,26 @@ namespace ClassGeneric
             while (!success || n <= 0);
             return n;
         }
-        protected override void InputUser()
+        protected override void InputUser(Access<T> item)
         {
+            access = item;
             arr = new T[VerifiedInput()];
             Type type_arr = typeof(T);
             Console.WriteLine($"Создаем массив типа {type_arr}");
             for (int i = 0; i < arr.Length; i++)
             {
                 Console.Write($"Введите {i} элемент массива: ");
-                IAccess<T>[] g = new IAccess<T>[1];
-                DetermineType(ref g);
-                arr[i] = g[0].Input_Value();
+                arr[i] = access.Input_Value();
             }
         }
-        protected override void InputRandom()
+        protected override void InputRandom(Access<T> item)
         {
             Random rnd = new Random();
+            access = item;
             arr = new T[rnd.Next(3, 11)];
             for (int i = 0; i < arr.Length; i++)
             {
-                IAccess<T>[] g = new IAccess<T>[1];
-                DetermineType(ref g);
-                arr[i] = g[0].Random_Value();
+                arr[i] = access.Random_Value();
             }
         }
 
@@ -53,36 +53,10 @@ namespace ClassGeneric
             Console.WriteLine($"Выводим массив типа {type_arr}");
             foreach (T element in arr)
             {
-                IAccess<T>[] g = new IAccess<T>[1];
-                DetermineType(ref g);
-                string str = g[0].ValueToString(element);
+                string str = access.ValueToString(element);
                 Console.Write(str + "\t");
             }       
             Console.WriteLine();
-        }
-
-        private void DetermineType(ref IAccess<T>[] g)
-        {
-            Type type_arr = typeof(T);
-            switch (type_arr.ToString())
-            {
-                case "System.Int32":
-                    ProcessingInt gen1 = new ProcessingInt();
-                    g[0] = (IAccess<T>)gen1;
-                    break;
-                case "System.Double":
-                    ProcessingDouble gen2 = new ProcessingDouble();
-                    g[0] = (IAccess<T>)gen2;
-                    break;
-                case "System.Boolean":
-                    ProcessingBool gen3 = new ProcessingBool();
-                    g[0] = (IAccess<T>)gen3;
-                    break;
-                case "System.String":
-                    ProcessingString gen4 = new ProcessingString();
-                    g[0] = (IAccess<T>)gen4;
-                    break;
-            }
         }
     }
 }

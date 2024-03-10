@@ -3,33 +3,33 @@ using System.Runtime.InteropServices;
 
 namespace ClassGeneric
 {
-    public class ProcessingString : IAccess<string>
+    public class ProcessingString : Access<string>
     {
         private string n;
         public ProcessingString()
         {
             n = "";
         }
-        public string Input_Value()
+        public override string Input_Value()
         {
             n = Console.ReadLine();
             return n;
         }
 
-        public string Random_Value()
+        public override string Random_Value()
         {
             Random rnd = new Random();
             int len = rnd.Next(3,8);
             char[] chars = new char[len];
             for (int i = 0; i < len; i++)
             {
-                int num = rnd.Next(33, 256);
+                int num = rnd.Next(33, 256); 
                 chars[i] = (char)num; 
             }
             string str = new string(chars);
             return str;
         }
-        public string ValueToString(string val)
+        public override string ValueToString(string val)
         {
             return val;
         }

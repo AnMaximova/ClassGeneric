@@ -3,11 +3,12 @@ using System.Xml.Linq;
 
 namespace ClassGeneric
 {
-    public sealed class TwoDimensionalArray<T> : HeirArray, IPrinter
+    public sealed class TwoDimensionalArray<T> : HeirArray<T>, IPrinter
      {
-         private T[,] arr; //массив
+        private T[,] arr; //массив
+        Access<T> access;
 
-         public TwoDimensionalArray(bool input_mode = false) : base(input_mode)
+         public TwoDimensionalArray(Access<T> item, bool input_mode = false) : base(item, input_mode)
          {
          }
          private int VerifiedInput(out int n) //ввод количества строк и столбцов в двумерном массиве
@@ -28,10 +29,11 @@ namespace ClassGeneric
              while (!success || n <= 0);
              return m;
          }
-         protected override void InputUser()
+        protected override void InputUser(Access<T> item)
          {
              int row;
              int column;
+             access = item;
              row = VerifiedInput(out column);
              arr = new T[row, column];
              Type type_arr = typeof(T);
@@ -41,23 +43,20 @@ namespace ClassGeneric
                  for (int j = 0; j < arr.GetLength(1); j++)
                  {
                      Console.Write($"Элемент [{i},{j}]: ");
-                     IAccess<T>[] g = new IAccess<T>[1];
-                     DetermineType(ref g);
-                     arr[i,j] = g[0].Input_Value();
+                     arr[i,j] = access.Input_Value();
                 }
              }
          }
-         protected override void InputRandom()
+         protected override void InputRandom(Access<T> item)
          {
              Random rnd = new Random();
+             access = item;
              arr = new T[rnd.Next(2, 11), rnd.Next(2, 11)];
              for (int i = 0; i < arr.GetLength(0); i++)
              {
                  for (int j = 0; j < arr.GetLength(1); j++)
                  {
-                    IAccess<T>[] g = new IAccess<T>[1];
-                    DetermineType(ref g);
-                    arr[i,j] = g[0].Random_Value();
+                    arr[i,j] = access.Random_Value();
                 }
              }
          }
@@ -71,36 +70,11 @@ namespace ClassGeneric
              {
                  for (int j = 0; j < arr.GetLength(1); j++)
                  {
-                    IAccess<T>[] g = new IAccess<T>[1];
-                    DetermineType(ref g);
-                    string str = g[0].ValueToString(arr[i,j]);
+                    string str = access.ValueToString(arr[i,j]);
                     Console.Write(str + "\t");
                  }
                  Console.Write("\n");
              }
          }
-        private void DetermineType(ref IAccess<T>[] g)
-        {
-            Type type_arr = typeof(T);
-            switch (type_arr.ToString())
-            {
-                case "System.Int32":
-                    ProcessingInt gen1 = new ProcessingInt();
-                    g[0] = (IAccess<T>)gen1;
-                    break;
-                case "System.Double":
-                    ProcessingDouble gen2 = new ProcessingDouble();
-                    g[0] = (IAccess<T>)gen2;
-                    break;
-                case "System.Boolean":
-                    ProcessingBool gen3 = new ProcessingBool();
-                    g[0] = (IAccess<T>)gen3;
-                    break;
-                case "System.String":
-                    ProcessingString gen4 = new ProcessingString();
-                    g[0] = (IAccess<T>)gen4;
-                    break;
-            }
-        }
     }  
 }

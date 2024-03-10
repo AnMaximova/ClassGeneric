@@ -2,21 +2,21 @@
 
 namespace ClassGeneric
 {
-    public abstract class HeirArray
+    public abstract class HeirArray<T>
     {
-        public HeirArray(bool input_mode = false)
+        public HeirArray(Access<T> item, bool input_mode = false)
         {
             if (input_mode)
             {
-                InputUser();
+                InputUser(item);
             }
             else
             {
-                InputRandom();
+                InputRandom(item);
             }
         }
-        protected abstract void InputUser();
-        protected abstract void InputRandom();
+        protected abstract void InputUser(Access<T> item);
+        protected abstract void InputRandom(Access<T> item);
         public abstract void Print();
     }
 }

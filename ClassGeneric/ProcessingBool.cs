@@ -3,20 +3,20 @@
 
 namespace ClassGeneric
 {
-    public class ProcessingBool : IAccess<bool>
+    public class ProcessingBool : Access<bool>
     {
         private bool n;
         public ProcessingBool()
         {
             n = default(bool);
         }
-        public bool Input_Value()
+        public override bool Input_Value()
         {
             n = bool.Parse(Console.ReadLine());
             return n;
         }
 
-        public bool Random_Value()
+        public override bool Random_Value()
         {
             Random rnd = new Random();
             int num = rnd.Next(-10,10);
@@ -30,7 +30,7 @@ namespace ClassGeneric
             }
             return n;
         }
-        public string ValueToString(bool val)
+        public override string ValueToString(bool val)
         {
             return val.ToString();
         }
